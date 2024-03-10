@@ -62,7 +62,7 @@ public class CustomerController {
             existingCustomer.setName(updatedCustomer.getName());
             existingCustomer.setGender(updatedCustomer.getGender());
             existingCustomer.setDob(updatedCustomer.getDob());
-            existingCustomer.setcardId(updatedCustomer.getcardId());
+            existingCustomer.setCardId(updatedCustomer.getCardId());
             existingCustomer.setNationality(updatedCustomer.getNationality());
             existingCustomer.setPassport(updatedCustomer.getPassport());
             existingCustomer.setTaxcode(updatedCustomer.getTaxcode());
