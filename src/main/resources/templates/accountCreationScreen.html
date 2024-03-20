@@ -1,0 +1,183 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" ng-app="myApp">
+<head>
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,400i|Noto+Sans:400,400i,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #ededed;
+        }
+
+        .to {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: minmax(100px, auto);
+        }
+
+        .form {
+            border: 1px solid #80808000;
+            grid-column: 6/9;
+            grid-row: 3;
+            height: 400px;
+            width: 292px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0px 0px 14px 0px grey;
+            background-color: white;
+        }
+
+        h2 {
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+
+        i.fab.fa-app-store-ios {
+            display: block;
+            margin-bottom: 50px;
+            font-size: 28px;
+        }
+
+        label {
+            margin-left: -126px;
+            display: block;
+            font-weight: lighter;
+        }
+
+        input {
+            display: block;
+            border-bottom: 2px solid #00BCD4;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            width: 70%;
+        }
+        input[type="password"] {
+            padding: 5px;
+            width: 70%;
+        }
+        input#submit {
+            padding: 7px;
+            width: 50%;
+            border-radius: 10px;
+            border: none;
+            position: absolute;
+            bottom: 10px;
+            cursor: pointer;
+            background: linear-gradient(to right, #fc00ff, #00dbde);
+        }
+
+        input#submit:hover {
+            background: linear-gradient(to right, #fc466b, #3f5efb);
+        }
+    </style>
+</head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<body>
+<div class="to" ng-controller="myCtrl">
+    <div class="form">
+        <h2>Đăng ký tài khoản</h2>
+        <label style="margin-left: -150px;">Họ và tên</label>
+        <input type="text" name="name" ng-model="name">
+<!--        <label style="margin-left: -125px;">Số điện thoại</label>-->
+<!--        <input type="text" name="phoneNumber" ng-model="phoneNumber">-->
+<!--        <label style="margin-left: -170px;">Địa chỉ</label>-->
+<!--        <input type="text" name="address" ng-model="address">-->
+<!--        <label style="margin-left: -180px;">Email</label>-->
+<!--        <input type="text" name="email" ng-model="email">-->
+        <label style="margin-left: -110px;">Tên đăng nhập</label>
+        <input type="text" name="username" ng-model="username">
+        <label style="margin-left: -145px;">Password</label>
+        <input type="password" name="password" ng-model="password">
+        <input id="submit" type="submit" name="submit" value="Gửi" ng-click="submitForm()">
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function ($scope, $http,$window) {
+        $scope.submitForm = function () {
+            if (!$scope.name  || !$scope.username || !$scope.password  ) {
+                alert('Vui lòng điền đầy đủ thông tin.');
+            // } else if (!isValidEmail($scope.email)) {
+            //     alert('Vui lòng nhập một địa chỉ email hợp lệ.');
+            } else {
+                var data = {
+                    username: $scope.username,
+                    password: $scope.password
+                };
+                $http({
+                    method: 'POST',
+                    url: '/checkRepeat',
+                    data: data, // Chuyển đổi thành chuỗi JSON
+                    transformResponse: [function (data) {
+                        return data;
+                    }]
+                }).then(function (response) {
+                    if(response.data === "SUCCESS") {
+                        creatAccount();
+                    } else {
+                        alert('Tên tài khoản đã được đăng ký, vui lòng thử lại');
+                    }
+
+                }, function (error) {
+                    alert('Có lỗi xảy ra khi gọi API.');
+                });
+            }
+        };
+
+        function creatAccount() {
+            var data = {
+                // email: $scope.email,
+                // phoneNumber: $scope.phoneNumber,
+                name: $scope.name,
+                // address: $scope.address,
+                username: $scope.username,
+                password: $scope.password
+            };
+            $http({
+                method: 'POST',
+                url: '/createAcc',
+                data: data, // Chuyển đổi thành chuỗi JSON
+                transformResponse: [function (data) {
+                    return data;
+                }]
+            }).then(function (response) {
+                alert('Lưu thành công.');
+                alert('Điều hướng về đăng nhập');
+                $window.location.href = '/login';
+
+            }, function (error) {
+                alert('Có lỗi xảy ra khi gọi API.');
+            });
+        }
+
+        function isValidEmail(email) {
+            var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            return emailPattern.test(email);
+        }
+    });
+</script>
+</body>
+</html>
