@@ -10,27 +10,30 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 	@Autowired
 	private CustomerRepository customerRepository;
-	
+
+	@org.springframework.transaction.annotation.Transactional(rollbackFor = {Exception.class})
 	public Customer save(Customer customer) {
-		return customerRepository.save(customer);
+		Customer registerCustomer = customerRepository.save(customer);
+		return registerCustomer;
 	}
-	
+
 	public Customer saveandflush(Customer customer) {
 		return customerRepository.saveAndFlush(customer);
 	}
-	
-	public void deleteById (Long id) {
+
+	public void deleteById(Long id) {
 		customerRepository.deleteById(id);
 	}
-	
-	public Optional<Customer> findById(Long id){
+
+	public Optional<Customer> findById(Long id) {
 		return customerRepository.findById(id);
-		
+
 	}
-	
-	public List<Customer> findAll(){
+
+	public List<Customer> findAll() {
 		return customerRepository.findAll();
 	}
-	
-	
+	public List<Customer> searchCustomer(String name) {
+		return customerRepository.findByName(name);
+	}
 }

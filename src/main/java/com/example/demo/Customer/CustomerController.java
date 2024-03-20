@@ -13,28 +13,59 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
-	
-	@Autowired
-	private CustomerService customerService;
-	
-	@PostMapping
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.save(customer);
-        return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
-    }
-	
-	@GetMapping
-	public ResponseEntity<List<Customer>> getAllCustomers() {
-	    List<Customer> customers = customerService.findAll();
-	    return new ResponseEntity<>(customers, HttpStatus.OK);
-	}
 
-	@DeleteMapping("/{id}")
+    @Autowired
+    private CustomerService customerService;
+
+    @PostMapping
+    public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerRequest request) {
+        Customer customer = Customer.builder()
+                .cardId(request.getIdentify())
+                .curAddress(request.getCurAddress())
+                .perAddress(request.getPerAddress())
+                .passport(request.getPassport())
+                .email(request.getEmail())
+                .dob(request.getDob())
+                .position(request.getPosition())
+                .job(request.getJob())
+                .phone(request.getPhone_number())
+                .gender(request.getGender())
+                .nationality(request.getNationality())
+                .build();
+        Customer savedCustomer = customerService.save(customer);
+        CustomerResponse response = CustomerResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Create customer successfully")
+                .data(savedCustomer)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        List<Customer> customers = customerService.findAll();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Object> searchCustomer(@RequestParam String username) {
+        CustomerResponse response = CustomerResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("searched successfully")
+                .data(customerService.searchCustomer(username))
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         // Check if the customer with given id exists
         if (customerService.findById(id).isPresent()) {
@@ -44,25 +75,26 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-	
-	@GetMapping("/{id}")
+
+    @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
         return customerService.findById(id)
                 .map(customer -> new ResponseEntity<>(customer, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-	@PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer updatedCustomer) {
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody @Valid CustomerRequest updatedCustomer) {
         Optional<Customer> existingCustomerOptional = customerService.findById(id);
 
         if (existingCustomerOptional.isPresent()) {
             Customer existingCustomer = existingCustomerOptional.get();
 
             // Cập nhật tất cả các thuộc tính từ đối tượng cập nhật
-            existingCustomer.setName(updatedCustomer.getName());
+            existingCustomer.setName(updatedCustomer.getFull_name());
             existingCustomer.setGender(updatedCustomer.getGender());
             existingCustomer.setDob(updatedCustomer.getDob());
-            existingCustomer.setCardId(updatedCustomer.getCardId());
+            existingCustomer.setCardId(updatedCustomer.getIdentify());
             existingCustomer.setNationality(updatedCustomer.getNationality());
             existingCustomer.setPassport(updatedCustomer.getPassport());
             existingCustomer.setTaxcode(updatedCustomer.getTaxcode());
@@ -71,7 +103,7 @@ public class CustomerController {
             existingCustomer.setPerAddress(updatedCustomer.getPerAddress());
             existingCustomer.setCurAddress(updatedCustomer.getCurAddress());
             existingCustomer.setEmail(updatedCustomer.getEmail());
-            existingCustomer.setPhone(updatedCustomer.getPhone());
+            existingCustomer.setPhone(updatedCustomer.getPhone_number());
             // Lưu và đẩy thay đổi xuống cơ sở dữ liệu
             customerService.saveandflush(existingCustomer);
 
@@ -81,5 +113,4 @@ public class CustomerController {
         }
     }
 
-	
 }
