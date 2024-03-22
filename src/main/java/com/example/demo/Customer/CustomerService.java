@@ -36,4 +36,8 @@ public class CustomerService {
 	public List<Customer> searchCustomer(String name) {
 		return customerRepository.findByName(name);
 	}
+
+	public Customer getCustomer(Long id) {
+		return customerRepository.findById(id).get();
+	}
 }

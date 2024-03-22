@@ -3,6 +3,7 @@ package com.example.demo.Loan;
 import java.util.Date;
 
 import com.example.demo.Customer.Customer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,11 +29,12 @@ public class Loan {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id", referencedColumnName = "id",nullable = false)
     private Customer customer;
     @Column(name = "loan_amount")
-    private Long loanAmount;
+    private Double loanAmount;
     @Column(name = "interest_rate")
     private Double interestRate;
     @Column(name = "loan_term")
