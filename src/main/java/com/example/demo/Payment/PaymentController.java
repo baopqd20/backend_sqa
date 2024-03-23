@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Loan.Loan;
@@ -26,7 +26,7 @@ public class PaymentController {
 
     @PostMapping("/{id}")
     @Transactional(rollbackFor = { Exception.class })
-    public ResponseEntity<Object> payLoan(@PathVariable String id, @RequestParam PaymentRequest request) {
+    public ResponseEntity<Object> payLoan(@PathVariable String id, @RequestBody PaymentRequest request) {
         Loan loan = loanService.getDetailLoan(id);
 
         Payment payment = Payment.builder()

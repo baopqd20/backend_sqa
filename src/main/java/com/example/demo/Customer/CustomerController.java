@@ -19,15 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/customer")
 public class CustomerController {
 
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerRequest request) {
         Customer customer = Customer.builder()
+                .name(request.getFull_name())
                 .cardId(request.getIdentify())
                 .curAddress(request.getCurAddress())
                 .perAddress(request.getPerAddress())
@@ -49,7 +50,7 @@ public class CustomerController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Customer>> getAllCustomers() {
         List<Customer> customers = customerService.findAll();
         return new ResponseEntity<>(customers, HttpStatus.OK);
@@ -84,7 +85,8 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody @Valid CustomerRequest updatedCustomer) {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id,
+            @RequestBody @Valid CustomerRequest updatedCustomer) {
         Optional<Customer> existingCustomerOptional = customerService.findById(id);
 
         if (existingCustomerOptional.isPresent()) {

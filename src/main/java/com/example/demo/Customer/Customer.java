@@ -12,13 +12,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "customer")
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Customer {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +41,6 @@ public class Customer {
 	private String phone;
 	private String email;
 	@JsonIgnore
-	@OneToMany(mappedBy = "loans")
+	@OneToMany(mappedBy = "customer")
 	private List<Loan> loans;
 }
