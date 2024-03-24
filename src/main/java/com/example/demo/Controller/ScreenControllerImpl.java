@@ -14,6 +14,11 @@ public class ScreenControllerImpl implements ScreenController {
     }
 
     @Override
+    public String createLoan() {
+        return "createLoan.html";
+    }
+
+    @Override
     public String getInformation() {
         return "searchCustomer.html";
     }

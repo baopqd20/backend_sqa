@@ -10,6 +10,8 @@ public interface ScreenController {
 
     @GetMapping("/createAccount")
     public String createAccount();
+    @GetMapping("/createLoan")
+    public String createLoan();
     @GetMapping("/information")
     public String getInformation();
 }

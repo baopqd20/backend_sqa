@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Loan</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        .container button {
+            margin: 10px;
+            padding: 15px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .container button:hover {
+            background-color: #45a049;
+        }
+        .loan-dropdown {
+            display: none;
+            margin-top: 20px;
+        }
+        .loan-dropdown select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .loan-form {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .loan-form input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 200px;
+        }
+        .loan-results {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <button onclick="showLoanFunction()">Chức năng trả lãi ngân hàng</button>
+    <button onclick="showLoanForm()">Chức năng vay lãi</button>
+    <div class="loan-dropdown" id="loanDropdown">
+        <select id="loanDuration">
+            <option value="0.03">3 tháng với lãi suất 3%</option>
+            <option value="0.06">6 tháng với lãi suất 6%</option>
+            <option value="0.09">9 tháng với lãi suất 9%</option>
+            <option value="0.12">12 tháng với lãi suất 12%</option>
+        </select>
+    </div>
+    <div class="loan-form" id="loanForm">
+        <input type="text" placeholder="Số tiền cần vay" id="loanAmount" oninput="formatCurrency(this)">
+        <button onclick="calculateLoan()">Xác nhận</button>
+    </div>
+    <div class="loan-results" id="loanResults">
+        <p id="loanResult"></p>
+        <p> Nhân viên kiểm tra đủ giấy tờ chưa : </p>
+        <label><input type="checkbox" id="salaryCheckbox"> Bảng lương</label><br>
+        <label><input type="checkbox" id="payrollCheckbox"> Sao kê lương</label><br>
+        <label><input type="checkbox" id="collateralCheckbox"> Tài sản thế chấp</label><br>
+        <button id="confirmLoanButton" onclick="confirmLoan()">Xác nhận vay</button>
+    </div>
+</div>
+
+<script>
+    function showLoanFunction() {
+        alert("Chức năng trả lãi ngân hàng được chọn");
+    }
+
+    function showLoanForm() {
+        var loanForm = document.getElementById("loanForm");
+        var loanDropdown = document.getElementById("loanDropdown");
+        loanForm.style.display = "flex";
+        loanDropdown.style.display = "block";
+    }
+
+    function calculateLoan() {
+        var loanDuration = document.getElementById("loanDuration");
+        var interestRate = parseFloat(loanDuration.value);
+        var loanAmount = parseFloat(document.getElementById("loanAmount").value);
+        var months = parseInt(loanDuration.options[loanDuration.selectedIndex].text);
+
+        // Kiểm tra nếu loanAmount là một số hợp lệ
+        if (!isNaN(loanAmount)) {
+            var totalInterest = loanAmount * interestRate * months;
+            var totalAmount = loanAmount + totalInterest;
+            var loanResult = document.getElementById("loanResult");
+            loanResult.textContent = "Sau " + months + " tháng, số tiền vay là " + totalAmount.toFixed(2) + " VNĐ (bao gồm lãi suất " + totalInterest.toFixed(2) + " VNĐ).";
+            var loanResults = document.getElementById("loanResults");
+            loanResults.style.display = "block";
+        } else {
+            alert("Vui lòng nhập vào một số hợp lệ cho số tiền cần vay.");
+        }
+    }
+
+    function confirmLoan() {
+        var salaryCheckbox = document.getElementById("salaryCheckbox");
+        var payrollCheckbox = document.getElementById("payrollCheckbox");
+        var collateralCheckbox = document.getElementById("collateralCheckbox");
+
+        // Kiểm tra xem tất cả các checkbox đã được chọn hay chưa
+        if (salaryCheckbox.checked && payrollCheckbox.checked && collateralCheckbox.checked) {
+            // Nếu tất cả các checkbox đã được chọn, hiển thị thông báo xác nhận vay
+            alert("Xác nhận vay thành công.");
+        } else {
+            // Nếu không, hiển thị thông báo cảnh báo
+            alert("Nhân viên chưa nhận đủ giấy tờ !!!");
+        }
+    }
+
+    function formatCurrency(input) {
+        var value = input.value.replace(/[^\d]/g, ''); // Loại bỏ tất cả các ký tự không phải số
+        var parts = [];
+        while (value.length > 3) {
+            parts.unshift(value.slice(-3)); // Thêm 3 số cuối vào mảng parts
+            value = value.slice(0, -3); // Loại bỏ 3 số cuối khỏi value
+        }
+        parts.unshift(value); // Thêm phần còn lại của value vào parts
+        input.value = parts.join('.') + ' VND'; // Ghép các phần tử trong parts với dấu chấm và thêm VND vào cuối
+    }
+
+</script>
+</body>
+</html>
