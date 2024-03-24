@@ -242,13 +242,13 @@ input[type="submit"]:active
                 };
                 $http({
                     method: 'POST',
-                    url: '/login',
+                    url: '/api/auth/login',
                     data: data, // Chuyển đổi thành chuỗi JSON
                     transformResponse: [function (data) {
                         return data;
                     }]
                 }).then(function (response) {
-                    if(response.data === 'Login successful') {
+                    if (response === 'Login successful') {
                         alert("Sai tài khoản hoặc mật khẩu, vui lòng thử lại");
                     } else {
                         $window.location.href = '/information';

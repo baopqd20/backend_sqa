@@ -3,7 +3,7 @@ package com.example.demo.Controller;
 import com.example.demo.User.User;
 
 import java.util.List;
-
+@org.springframework.web.bind.annotation.RestController
 public class RestControllerImpl implements RestController{
     @Override
     public List<User> doSearch(User obj) {

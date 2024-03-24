@@ -56,12 +56,12 @@ public class CustomerController {
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<Object> searchCustomer(@RequestParam String username) {
+    @PostMapping("/search")
+    public ResponseEntity<Object> searchCustomer(@RequestBody CustomerRequest customerRequest) {
         CustomerResponse response = CustomerResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("searched successfully")
-                .data(customerService.searchCustomer(username))
+                .data(customerService.searchCustomer(customerRequest.full_name))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

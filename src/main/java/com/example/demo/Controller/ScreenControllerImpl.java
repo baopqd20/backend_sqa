@@ -15,6 +15,6 @@ public class ScreenControllerImpl implements ScreenController {
 
     @Override
     public String getInformation() {
-        return "information.html";
+        return "searchCustomer.html";
     }
 }
