@@ -225,6 +225,7 @@ input[type="submit"]:active
     </div>
 </section>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script type="text/javascript" src="app.config.js"></script>
 <script>
     var app = angular.module('myApp', []);
     app.controller('myCtrl', function ($scope, $http,$window) {
@@ -242,7 +243,7 @@ input[type="submit"]:active
                 };
                 $http({
                     method: 'POST',
-                    url: '/api/auth/login',
+                    url: config.baseUrl + '/api/auth/login',
                     data: data, // Chuyển đổi thành chuỗi JSON
                     transformResponse: [function (data) {
                         return data;
