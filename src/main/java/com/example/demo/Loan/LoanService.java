@@ -66,4 +66,8 @@ public class LoanService {
         loanRepository.saveAndFlush(loan);
         return true;
     }
+
+    public List<Loan> getAllActiveLoan() {
+        return loanRepository.findAllActiveLoan();
+    }
 }
