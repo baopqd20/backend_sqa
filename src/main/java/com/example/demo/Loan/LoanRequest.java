@@ -12,8 +12,7 @@ public class LoanRequest {
     Long customer_id;
     Double loan_amount;
     Date start_date;
-    Date end_date;
-    Double loan_term;
+    Integer loan_term;
     Integer has_salary_table;
     Integer has_salary_statement;
     Integer has_collateral;

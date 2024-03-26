@@ -51,7 +51,6 @@ public class LoanController {
                 .startDate(request.getStart_date())
                 .loanAmount(request.getLoan_amount())
                 .loanTerm(request.getLoan_term())
-                .endDate(request.getEnd_date())
                 .hasSalaryTable(request.getHas_salary_table())
                 .hasSalaryStatement(request.getHas_salary_statement())
                 .hasCollateral(request.getHas_collateral())

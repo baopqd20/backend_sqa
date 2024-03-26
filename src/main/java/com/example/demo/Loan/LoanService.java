@@ -1,5 +1,7 @@
 package com.example.demo.Loan;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,6 +20,12 @@ public class LoanService {
     private final CustomerRepository customerRepository;
 
     public Loan createUserLoan(Loan request) {
+        Date startDate = request.getStartDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.MONTH, request.getLoanTerm());
+        Date endDate = calendar.getTime();
+        request.setEndDate(endDate);
         return loanRepository.save(request);
     }
 
