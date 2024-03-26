@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Customer.Customer;
 import com.example.demo.Customer.CustomerService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -33,6 +34,15 @@ public class LoanController {
                 .build();
         return new ResponseEntity<>(loanResponse, HttpStatus.OK);
     }
+    @GetMapping("/all-active")
+    public ResponseEntity<Object> getAllActiveLoan() {
+        LoanResponse loanResponse = LoanResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("Get all loan successfully")
+                .data(loanService.getAllActiveLoan())
+                .build();
+        return new ResponseEntity<>(loanResponse, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getDetailLoan(@PathVariable String id) {
@@ -45,7 +55,7 @@ public class LoanController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createLoan(@RequestBody LoanRequest request) {
+    public ResponseEntity<Object> createLoan(@RequestBody @Valid LoanRequest request) {
         Customer customer = customerService.getCustomer(request.getCustomer_id());
         Loan loan = Loan.builder()
                 .customer(customer)

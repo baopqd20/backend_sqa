@@ -1,7 +1,11 @@
 package com.example.demo.Payment;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.Loan.Loan;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,5 +25,9 @@ public class PaymentService {
 
     public Payment getPayment(Long id) {
         return paymentRepository.findById(id).get();
+    }
+
+    public List<Payment> getPaymentHistory(Loan loan) {
+        return paymentRepository.findByLoan(loan);
     }
 }
