@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="loanApp">
 <head>
     <meta charset="UTF-8">
     <title>Create Loan</title>
@@ -7,13 +7,15 @@
         body {
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* Hiển thị thông tin trên cùng bên trái */
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
         }
         .container {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Hiển thị thông tin trên cùng bên trái */
         }
         .container button {
             margin: 10px;
@@ -30,7 +32,6 @@
             background-color: #45a049;
         }
         .loan-dropdown {
-            display: none;
             margin-top: 20px;
         }
         .loan-dropdown select {
@@ -39,7 +40,6 @@
             border-radius: 5px;
         }
         .loan-form {
-            display: none;
             flex-direction: column;
             align-items: center;
             margin-top: 20px;
@@ -52,94 +52,153 @@
             width: 200px;
         }
         .loan-results {
-            display: none;
             margin-top: 20px;
+        }
+        .customer-info {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+        }
+        .customer-info .personal-info {
+            flex: 4;
+        }
+        .customer-info .loan-functions {
+            flex: 8;
         }
     </style>
 </head>
-<body>
+<body ng-controller="LoanController">
 <div class="container">
-    <button onclick="showLoanFunction()">Chức năng trả lãi ngân hàng</button>
-    <button onclick="showLoanForm()">Chức năng vay lãi</button>
-    <div class="loan-dropdown" id="loanDropdown">
-        <select id="loanDuration">
-            <option value="0.03">3 tháng với lãi suất 3%</option>
-            <option value="0.06">6 tháng với lãi suất 6%</option>
-            <option value="0.09">9 tháng với lãi suất 9%</option>
-            <option value="0.12">12 tháng với lãi suất 12%</option>
-        </select>
-    </div>
-    <div class="loan-form" id="loanForm">
-        <input type="text" placeholder="Số tiền cần vay" id="loanAmount" oninput="formatCurrency(this)">
-        <button onclick="calculateLoan()">Xác nhận</button>
-    </div>
-    <div class="loan-results" id="loanResults">
-        <p id="loanResult"></p>
-        <p> Nhân viên kiểm tra đủ giấy tờ chưa : </p>
-        <label><input type="checkbox" id="salaryCheckbox"> Bảng lương</label><br>
-        <label><input type="checkbox" id="payrollCheckbox"> Sao kê lương</label><br>
-        <label><input type="checkbox" id="collateralCheckbox"> Tài sản thế chấp</label><br>
-        <button id="confirmLoanButton" onclick="confirmLoan()">Xác nhận vay</button>
+    <div class="customer-info">
+        <div class="personal-info">
+            <h3>Thông tin người vay:</h3>
+            <p>Id: {{customer.id}}</p>
+            <p>Tên: {{customer.name}}</p>
+            <p>Quốc gia: {{customer.nationality}}</p>
+        </div>
+        <div class="loan-functions">
+            <button ng-click="showLoanFunction()">Chức năng trả lãi ngân hàng</button>
+            <button ng-click="showLoanForm()">Chức năng vay lãi</button>
+            <div class="loan-dropdown" id="loanDropdown" ng-show="showDropdown">
+                <select id="loanDuration" ng-model="loan_term">
+                    <option value="3">3 tháng với lãi suất 3%</option>
+                    <option value="6">6 tháng với lãi suất 6%</option>
+                    <option value="9">9 tháng với lãi suất 9%</option>
+                    <option value="12">12 tháng với lãi suất 12%</option>
+                </select>
+            </div>
+            <div class="loan-form" id="loanForm" ng-show="showForm">
+                <input type="text" placeholder="Số tiền cần vay" id="loanAmount" ng-model="loanAmount" ng-change="formatCurrency()">
+                <button ng-click="calculateLoan()">Xác nhận</button>
+            </div>
+            <div class="loan-results" id="loanResults" ng-show="showResults">
+                <p id="loanResult">{{loanResult}}</p>
+                <p> Nhân viên kiểm tra đủ giấy tờ chưa : </p>
+                <label><input type="checkbox" id="salaryCheckbox" ng-model="salaryCheckbox"> Bảng lương</label><br>
+                <label><input type="checkbox" id="payrollCheckbox" ng-model="payrollCheckbox"> Sao kê lương</label><br>
+                <label><input type="checkbox" id="collateralCheckbox" ng-model="collateralCheckbox"> Tài sản thế chấp</label><br>
+                <button id="confirmLoanButton" ng-click="confirmLoan()">Xác nhận vay</button>
+            </div>
+        </div>
     </div>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 <script>
-    function showLoanFunction() {
-        alert("Chức năng trả lãi ngân hàng được chọn");
-    }
+    angular.module('loanApp', [])
+        .controller('LoanController', function($scope, $http, $location) {
+            $scope.showDropdown = false;
+            $scope.showForm = false;
+            $scope.showResults = false;
+            $scope.customer = {};
 
-    function showLoanForm() {
-        var loanForm = document.getElementById("loanForm");
-        var loanDropdown = document.getElementById("loanDropdown");
-        loanForm.style.display = "flex";
-        loanDropdown.style.display = "block";
-    }
+            // Lấy id từ URL
+            var urlParams = new URLSearchParams(window.location.search);
+            var customerId = urlParams.get('id');
 
-    function calculateLoan() {
-        var loanDuration = document.getElementById("loanDuration");
-        var interestRate = parseFloat(loanDuration.value);
-        var loanAmount = parseFloat(document.getElementById("loanAmount").value);
-        var months = parseInt(loanDuration.options[loanDuration.selectedIndex].text);
+            // Gọi API để lấy thông tin người dùng
+            $http.get('http://localhost:8080/customer/' + customerId)
+                .then(function(response) {
+                    $scope.customer = response.data;
+                })
+                .catch(function(error) {
+                    console.log('Error fetching customer data:', error);
+                });
 
-        // Kiểm tra nếu loanAmount là một số hợp lệ
-        if (!isNaN(loanAmount)) {
-            var totalInterest = loanAmount * interestRate * months;
-            var totalAmount = loanAmount + totalInterest;
-            var loanResult = document.getElementById("loanResult");
-            loanResult.textContent = "Sau " + months + " tháng, số tiền vay là " + totalAmount.toFixed(2) + " VNĐ (bao gồm lãi suất " + totalInterest.toFixed(2) + " VNĐ).";
-            var loanResults = document.getElementById("loanResults");
-            loanResults.style.display = "block";
-        } else {
-            alert("Vui lòng nhập vào một số hợp lệ cho số tiền cần vay.");
-        }
-    }
+            $scope.showLoanFunction = function() {
+                alert("Chức năng trả lãi ngân hàng được chọn");
+            };
 
-    function confirmLoan() {
-        var salaryCheckbox = document.getElementById("salaryCheckbox");
-        var payrollCheckbox = document.getElementById("payrollCheckbox");
-        var collateralCheckbox = document.getElementById("collateralCheckbox");
+            $scope.showLoanForm = function() {
+                $scope.showForm = true;
+                $scope.showDropdown = true;
+            };
 
-        // Kiểm tra xem tất cả các checkbox đã được chọn hay chưa
-        if (salaryCheckbox.checked && payrollCheckbox.checked && collateralCheckbox.checked) {
-            // Nếu tất cả các checkbox đã được chọn, hiển thị thông báo xác nhận vay
-            alert("Xác nhận vay thành công.");
-        } else {
-            // Nếu không, hiển thị thông báo cảnh báo
-            alert("Nhân viên chưa nhận đủ giấy tờ !!!");
-        }
-    }
+            $scope.calculateLoan = function() {
+                $scope.loan_amount = $scope.loanAmount
+                $scope.loan_amount = $scope.loan_amount.replace(/[^\d.]/g, '');
+                $scope.loan_amount = $scope.loan_amount.replace(/\./g, '');
+                $scope.loan_amount = $scope.loan_amount.replace(' VND', '');
+                debugger
+                var interestRate = parseFloat($scope.loan_term);
+                var loanAmount = parseFloat($scope.loan_amount);
+                var months = parseInt($scope.loan_term);
 
-    function formatCurrency(input) {
-        var value = input.value.replace(/[^\d]/g, ''); // Loại bỏ tất cả các ký tự không phải số
-        var parts = [];
-        while (value.length > 3) {
-            parts.unshift(value.slice(-3)); // Thêm 3 số cuối vào mảng parts
-            value = value.slice(0, -3); // Loại bỏ 3 số cuối khỏi value
-        }
-        parts.unshift(value); // Thêm phần còn lại của value vào parts
-        input.value = parts.join('.') + ' VND'; // Ghép các phần tử trong parts với dấu chấm và thêm VND vào cuối
-    }
+                if (!isNaN(loanAmount)) {
+                    var totalInterest = loanAmount * interestRate * months / 100;
+                    var totalAmount = loanAmount + totalInterest;
+                    $scope.loanResult = "Sau " + months + " tháng, số tiền vay là " + totalAmount.toFixed(2) + " VNĐ (bao gồm tiền lãi " + totalInterest.toFixed(2) + " VNĐ).";
+                    $scope.showResults = true;
+                } else {
+                    alert("Vui lòng nhập vào một số hợp lệ cho số tiền cần vay.");
+                }
+            };
 
+            $scope.confirmLoan = function() {
+                if ($scope.salaryCheckbox && $scope.payrollCheckbox && $scope.collateralCheckbox) {
+                    var data = {
+                        loan_amount: $scope.loan_amount,
+                        loan_term: $scope.loan_term,
+                        interest_rate: parseFloat($scope.loan_term),
+                        has_salary_table : 1,
+                        has_salary_statement : 1,
+                        has_collateral : 1,
+                        customer_id: customerId,
+                    };
+                    $http({
+                        method: 'POST',
+                        url: '/loan/create',
+                        data: data, // Chuyển đổi thành chuỗi JSON
+                        transformResponse: [function (data) {
+                            return data;
+                        }]
+                    }).then(function (response) {
+                        if (response.data.status === 200) {
+                            alert("Tạo khoản vay thành công <3");
+                            $window.location.href = '/information';
+                        } else {
+                            alert("Tạo khoản vay không thành công");
+                        }
+                    }, function (error) {
+                        console.log(error);
+                        alert('Có lỗi xảy ra khi gọi API.');
+                    });
+                } else {
+                    alert("Nhân viên chưa nhận đủ giấy tờ !!!");
+                }
+            };
+
+            $scope.formatCurrency = function() {
+                $scope.loanAmount = $scope.loanAmount.replace(/[^\d]/g, '');
+                var parts = [];
+                while ($scope.loanAmount.length > 3) {
+                    parts.unshift($scope.loanAmount.slice(-3));
+                    $scope.loanAmount = $scope.loanAmount.slice(0, -3);
+                }
+                parts.unshift($scope.loanAmount);
+                $scope.loanAmount = parts.join('.') + ' VND';
+            };
+        });
 </script>
 </body>
 </html>
