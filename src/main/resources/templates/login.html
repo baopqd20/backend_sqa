@@ -243,7 +243,7 @@ input[type="submit"]:active
                 };
                 $http({
                     method: 'POST',
-                    url: config.baseUrl + '/api/auth/login',
+                    url: '/api/auth/login',
                     data: data, // Chuyển đổi thành chuỗi JSON
                     transformResponse: [function (data) {
                         return data;

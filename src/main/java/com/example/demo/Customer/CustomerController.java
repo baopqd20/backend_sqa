@@ -28,7 +28,7 @@ public class CustomerController {
     @PostMapping("/create")
     public ResponseEntity<Object> createCustomer(@RequestBody @Valid CustomerRequest request) {
         Customer customer = Customer.builder()
-                .name(request.getFull_name())
+                .name(request.getName())
                 .cardId(request.getIdentify())
                 .curAddress(request.getCurAddress())
                 .perAddress(request.getPerAddress())
@@ -61,7 +61,7 @@ public class CustomerController {
         CustomerResponse response = CustomerResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("searched successfully")
-                .data(customerService.searchCustomer(customerRequest.full_name))
+                .data(customerService.searchCustomer(customerRequest.name))
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class CustomerController {
             Customer existingCustomer = existingCustomerOptional.get();
 
             // Cập nhật tất cả các thuộc tính từ đối tượng cập nhật
-            existingCustomer.setName(updatedCustomer.getFull_name());
+            existingCustomer.setName(updatedCustomer.getName());
             existingCustomer.setGender(updatedCustomer.getGender());
             existingCustomer.setDob(updatedCustomer.getDob());
             existingCustomer.setCardId(updatedCustomer.getIdentify());

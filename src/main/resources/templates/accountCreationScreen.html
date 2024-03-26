@@ -31,8 +31,8 @@
             border: 1px solid #80808000;
             grid-column: 6/9;
             grid-row: 3;
-            height: 400px;
-            width: 292px;
+            height: 750px;
+            width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -69,7 +69,15 @@
 
         input[type="text"] {
             padding: 5px;
-            width: 70%;
+            width: 80%;
+        }
+        input[type="email"] {
+            padding: 5px;
+            width: 80%;
+        }
+        input[type="tel"] {
+            padding: 5px;
+            width: 80%;
         }
         input[type="password"] {
             padding: 5px;
@@ -96,19 +104,32 @@
 <body>
 <div class="to" ng-controller="myCtrl">
     <div class="form">
-        <h2>Tạo khoản vay</h2>
-        <label style="margin-left: -150px;">Họ và tên</label>
-        <input type="text" name="name" ng-model="name">
-<!--        <label style="margin-left: -125px;">Số điện thoại</label>-->
-<!--        <input type="text" name="phoneNumber" ng-model="phoneNumber">-->
-<!--        <label style="margin-left: -170px;">Địa chỉ</label>-->
-<!--        <input type="text" name="address" ng-model="address">-->
-<!--        <label style="margin-left: -180px;">Email</label>-->
-<!--        <input type="text" name="email" ng-model="email">-->
-        <label style="margin-left: -110px;">Tên đăng nhập</label>
-        <input type="text" name="username" ng-model="username">
-        <label style="margin-left: -145px;">Password</label>
-        <input type="password" name="password" ng-model="password">
+        <h2>Tạo tài khoản cho người vay</h2>
+
+        <label style="margin-left: -250px;">Họ và tên *</label>
+        <input type="text" name="name" ng-model="name" required placeholder="Nhập họ và tên">
+
+        <label style="margin-left: -225px;">Số điện thoại *</label>
+        <input type="tel" name="phone" ng-model="phone" required placeholder="Nhập số điện thoại">
+
+        <label style="margin-left: -175px;">Ngày tháng năm sinh *</label>
+        <input type="text" name="dob" ng-model="dob" required placeholder="Nhập ngày tháng năm sinh (yyyy-MM-dd)">
+
+        <label style="margin-left: -250px;">Quốc tịch *</label>
+        <input type="text" name="nationality" ng-model="nationality" required placeholder="Nhập quốc tịch">
+
+        <label style="margin-left: -230px;">Địa chỉ hiện tại</label>
+        <input type="text" name="curAddress" ng-model="curAddress" placeholder="Nhập địa chỉ hiện tại">
+
+        <label style="margin-left: -295px;">Email</label>
+        <input type="email" name="email" ng-model="email" placeholder="Nhập email">
+
+        <label style="margin-left: -275px;">Giới tính</label>
+        <input type="text" name="gender" ng-model="gender" placeholder="Nhập giới tính">
+
+        <label style="margin-left: -240px;">Nghề nghiệp</label>
+        <input type="text" name="job" ng-model="job" placeholder="Nhập nghề nghiệp">
+
         <input id="submit" type="submit" name="submit" value="Gửi" ng-click="submitForm()">
     </div>
 </div>
@@ -118,27 +139,33 @@
     var app = angular.module('myApp', []);
     app.controller('myCtrl', function ($scope, $http,$window) {
         $scope.submitForm = function () {
-            if (!$scope.name  || !$scope.username || !$scope.password  ) {
+            if (!$scope.name || !$scope.phone || !$scope.dob || !$scope.nationality) {
                 alert('Vui lòng điền đầy đủ thông tin.');
-            // } else if (!isValidEmail($scope.email)) {
-            //     alert('Vui lòng nhập một địa chỉ email hợp lệ.');
             } else {
                 var data = {
-                    username: $scope.username,
-                    password: $scope.password
+                    name: $scope.name || null,
+                    phone: $scope.phone || null,
+                    dob: $scope.dob || null,
+                    curAddress: $scope.curAddress || null,
+                    nationality: $scope.nationality || null,
+                    email: $scope.email || null,
+                    job: $scope.job || null,
+                    gender: $scope.gender || null
                 };
                 $http({
                     method: 'POST',
-                    url: '/checkRepeat',
-                    data: data, // Chuyển đổi thành chuỗi JSON
+                    url: '/customer/create',
+                    data: data,
                     transformResponse: [function (data) {
                         return data;
                     }]
                 }).then(function (response) {
-                    if(response.data === "SUCCESS") {
-                        creatAccount();
+                    var responseData = angular.fromJson(response.data);
+                    if(responseData.message === "Create customer successfully") {
+                        alert('Tạo tài khoản thành công, chuyển về trang tìm kiếm!');
+                        $window.location.href = '/information';
                     } else {
-                        alert('Tên tài khoản đã được đăng ký, vui lòng thử lại');
+                        alert('Tạo tài khoản không thành công');
                     }
 
                 }, function (error) {
