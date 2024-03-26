@@ -34,12 +34,12 @@ public class LoanController {
                 .build();
         return new ResponseEntity<>(loanResponse, HttpStatus.OK);
     }
-    @GetMapping("/all-active")
-    public ResponseEntity<Object> getAllActiveLoan() {
+    @GetMapping("/all-active/{id}")
+    public ResponseEntity<Object> getAllActiveLoan(@PathVariable String id) {
         LoanResponse loanResponse = LoanResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("Get all loan successfully")
-                .data(loanService.getAllActiveLoan())
+                .data(loanService.getAllActiveLoan(id))
                 .build();
         return new ResponseEntity<>(loanResponse, HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class LoanController {
                 .hasSalaryTable(request.getHas_salary_table())
                 .hasSalaryStatement(request.getHas_salary_statement())
                 .hasCollateral(request.getHas_collateral())
-                .status(0)
+                .status(2)
                 .build();
         LoanResponse response = LoanResponse.builder()
                 .status(HttpStatus.OK.value())

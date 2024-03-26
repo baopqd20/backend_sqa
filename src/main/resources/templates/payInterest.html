@@ -43,7 +43,7 @@
         <p>Lãi xuất: {{ loan.interestRate }}%</p>
         <p>Kì hạn vay: {{ loan.loanTerm }} tháng</p>
         <p>Ngày vay: {{ loan.startDate }}</p>
-        <button style="margin-bottom: 20px" type="button" class="btn btn-primary" ng-click="setTempId(loan.id)" data-toggle="modal" data-target="#updateAcc"
+        <button style="margin-bottom: 20px" type="button" class="btn btn-primary" ng-click="setTempId(loan.id,loan.loanAmount)" data-toggle="modal" data-target="#updateAcc"
                 data-whatever="@mdo">Trả khoản vay này </button>
     </div>
 </div>
@@ -62,7 +62,7 @@
                 <p>ID khoản vay: {{ tempId }}</p>
                 <div class="form-group">
                     <label for="paymentAmount">Số tiền trả (VNĐ)</label>
-                    <input type="number" class="form-control" id="paymentAmount" ng-model="paymentAmount" required>
+                    <input type="number" class="form-control" ng-max="tempAmount" id="paymentAmount" ng-model="paymentAmount" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -94,17 +94,19 @@
     app.controller('payInterestCtrl', function ($scope, $http,$window) {
         $scope.loanList = [];
         $scope.tempId = null;
+        $scope.tempAmount = null;
 
         var urlParams = new URLSearchParams(window.location.search);
         var customerId = urlParams.get('id');
 
-        $scope.setTempId = function(id) {
+        $scope.setTempId = function(id, amount) {
             $scope.tempId = id;
+            $scope.tempAmount = amount;
         };
 
         // Hàm lấy danh sách các khoản vay
         $scope.getLoanList = function () {
-            $http.get('http://localhost:8080/loan/all/' + customerId)
+            $http.get('http://localhost:8080/loan/all-active/' + customerId)
                 .then(function (response) {
                     $scope.loanList = response.data.data;
                     if ($scope.loanList.length === 0) {
@@ -126,19 +128,21 @@
             }
             $http({
                 method: 'POST',
-                url: '/api/auth/login',
+                url: '/payment/pay-loan',
                 data: data, // Chuyển đổi thành chuỗi JSON
                 transformResponse: [function (data) {
                     return data;
                 }]
             }).then(function (response) {
-                if (response === 'Login successful') {
-                    alert("Sai tài khoản hoặc mật khẩu, vui lòng thử lại");
+                if (response.status === 200) {
+                    alert("Bạn vừa trả tiền thành công ^^");
+                    $('#updateAcc').modal('hide');
+                    $scope.getLoanList()
                 } else {
-                    $window.location.href = '/information';
+                    alert("Trả tiền thất bại")
                 }
             }, function (error) {
-                console.log(error);
+                alert(error);
                 alert('Có lỗi xảy ra khi gọi API.');
             });
         };
