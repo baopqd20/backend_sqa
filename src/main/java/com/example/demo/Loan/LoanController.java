@@ -47,10 +47,14 @@ public class LoanController {
         Customer customer = customerService.getCustomer(request.getCustomer_id());
         Loan loan = Loan.builder()
                 .customer(customer)
-                .interestRate(1.0)
+                .interestRate(request.getInterest_rate())
                 .startDate(request.getStart_date())
                 .loanAmount(request.getLoan_amount())
                 .loanTerm(request.getLoan_term())
+                .endDate(request.getEnd_date())
+                .hasSalaryTable(request.getHas_salary_table())
+                .hasSalaryStatement(request.getHas_salary_statement())
+                .hasCollateral(request.getHas_collateral())
                 .status(0)
                 .build();
         LoanResponse response = LoanResponse.builder()

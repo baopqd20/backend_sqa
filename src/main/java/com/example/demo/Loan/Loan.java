@@ -48,6 +48,12 @@ public class Loan {
     private Date endDate;
     @Column(name = "status")
     private Integer status;
+    @Column(name = "has_salary_table")
+    private Integer hasSalaryTable;
+    @Column(name = "has_salary_statement")
+    private Integer hasSalaryStatement;
+    @Column(name = "has_collateral")
+    private Integer hasCollateral;
     @JsonIgnore
     @OneToMany(mappedBy = "loan")
     private List<Payment> payments;
