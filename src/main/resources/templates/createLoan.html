@@ -106,7 +106,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
 <script>
     angular.module('loanApp', [])
-        .controller('LoanController', function($scope, $http, $location) {
+        .controller('LoanController', function($scope, $http, $window, $location) {
             $scope.showDropdown = false;
             $scope.showForm = false;
             $scope.showResults = false;
@@ -122,11 +122,12 @@
                     $scope.customer = response.data;
                 })
                 .catch(function(error) {
-                    console.log('Error fetching customer data:', error);
+                    alert("Làm gì có thông tin của customer này hả bạn iu ơi ????")
+                    $window.location.href = '/information';
                 });
 
             $scope.showLoanFunction = function() {
-                alert("Chức năng trả lãi ngân hàng được chọn");
+                $window.location.href = '/payInterest?id=' + customerId;
             };
 
             $scope.showLoanForm = function() {
@@ -173,7 +174,8 @@
                             return data;
                         }]
                     }).then(function (response) {
-                        if (response.data.status === 200) {
+                        debugger
+                        if (response.status === 200) {
                             alert("Tạo khoản vay thành công <3");
                             $window.location.href = '/information';
                         } else {

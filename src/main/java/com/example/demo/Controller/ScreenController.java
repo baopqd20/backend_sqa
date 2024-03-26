@@ -12,6 +12,8 @@ public interface ScreenController {
     public String createAccount();
     @GetMapping("/createLoan")
     public String createLoan();
+    @GetMapping("/payInterest")
+    public String payInterest();
     @GetMapping("/information")
     public String getInformation();
 }

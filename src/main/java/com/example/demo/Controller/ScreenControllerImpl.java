@@ -19,6 +19,11 @@ public class ScreenControllerImpl implements ScreenController {
     }
 
     @Override
+    public String payInterest() {
+        return "payInterest.html";
+    }
+
+    @Override
     public String getInformation() {
         return "searchCustomer.html";
     }
