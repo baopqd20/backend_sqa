@@ -1,5 +1,7 @@
 package com.example.demo.Loan;
 
+import java.util.Date;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +50,7 @@ public class LoanController {
         Loan loan = Loan.builder()
                 .customer(customer)
                 .interestRate(request.getInterest_rate())
-                .startDate(request.getStart_date())
+                .startDate(new Date())
                 .loanAmount(request.getLoan_amount())
                 .loanTerm(request.getLoan_term())
                 .hasSalaryTable(request.getHas_salary_table())
