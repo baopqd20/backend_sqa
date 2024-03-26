@@ -41,7 +41,7 @@ public class Loan {
     @Column(name = "interest_rate")
     private Double interestRate;
     @Column(name = "loan_term")
-    private Double loanTerm;
+    private Integer loanTerm;
     @Column(name = "start_date")
     private Date startDate;
     @Column(name = "end_date")
