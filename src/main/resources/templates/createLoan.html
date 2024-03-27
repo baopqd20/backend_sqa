@@ -88,7 +88,7 @@
                 </select>
             </div>
             <div class="loan-form" id="loanForm" ng-show="showForm">
-                <input type="text" placeholder="Số tiền cần vay" id="loanAmount" ng-model="loanAmount" ng-change="formatCurrency()">
+                <input type="text" placeholder="Số tiền cần vay" id="loanAmount" min = "0" ng-model="loanAmount" ng-change="formatCurrency()">
                 <button ng-click="calculateLoan()">Xác nhận</button>
             </div>
             <div class="loan-results" id="loanResults" ng-show="showResults">

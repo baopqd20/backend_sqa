@@ -62,7 +62,7 @@
                 <p>ID khoản vay: {{ tempId }}</p>
                 <div class="form-group">
                     <label for="paymentAmount">Số tiền trả (VNĐ)</label>
-                    <input type="number" class="form-control" ng-max="tempAmount" id="paymentAmount" ng-model="paymentAmount" required>
+                    <input type="number" min = "0" class="form-control" ng-max="tempAmount" id="paymentAmount" ng-model="paymentAmount" required>
                 </div>
             </div>
             <div class="modal-footer">
