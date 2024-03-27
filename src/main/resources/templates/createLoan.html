@@ -146,8 +146,10 @@
                 var months = parseInt($scope.loan_term);
 
                 if (!isNaN(loanAmount)) {
-                    var totalInterest = loanAmount * interestRate * months / 100;
-                    var totalAmount = loanAmount + totalInterest;
+                    var monthlyInterestRate = interestRate / 100 / 12; // lãi suất hàng tháng
+                    var totalAmount = loanAmount * Math.pow(1 + monthlyInterestRate, months); // công thức lãi kép
+                    var totalInterest = totalAmount - loanAmount;
+
                     $scope.loanResult = "Sau " + months + " tháng, số tiền vay là " + totalAmount.toFixed(2) + " VNĐ (bao gồm tiền lãi " + totalInterest.toFixed(2) + " VNĐ).";
                     $scope.showResults = true;
                 } else {
