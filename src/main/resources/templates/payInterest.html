@@ -67,7 +67,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" ng-click="confirmPayment(paymentAmount)">Xác nhận</button>
+                <button type="button" class="btn btn-primary" ng-click="confirmPayment()">Xác nhận</button>
             </div>
         </div>
     </div>
@@ -94,6 +94,7 @@
     app.controller('payInterestCtrl', function ($scope, $http,$window) {
         $scope.loanList = [];
         $scope.tempId = null;
+        $scope.paymentAmount = null;
         $scope.tempAmount = null;
 
         var urlParams = new URLSearchParams(window.location.search);
@@ -121,10 +122,10 @@
 
         // Gọi hàm lấy danh sách khoản vay khi trang được tải
         $scope.getLoanList();
-        $scope.confirmPayment = function (amount) {
+        $scope.confirmPayment = function () {
             var data = {
                 loan_id : $scope.tempId,
-                amount : amount
+                amount : $scope.paymentAmount
             }
             $http({
                 method: 'POST',
