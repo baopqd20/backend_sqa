@@ -106,7 +106,7 @@
 
         // Hàm lấy danh sách các khoản vay
         $scope.getLoanList = function () {
-            $http.get('http://localhost:8080/loan/all-active/' + customerId)
+            $http.get('/loan/all-active/' + customerId)
                 .then(function (response) {
                     $scope.loanList = response.data.data;
                     if ($scope.loanList.length === 0) {
