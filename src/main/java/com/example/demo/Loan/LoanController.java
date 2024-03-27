@@ -35,7 +35,7 @@ public class LoanController {
         return new ResponseEntity<>(loanResponse, HttpStatus.OK);
     }
     @GetMapping("/all-active/{id}")
-    public ResponseEntity<Object> getAllActiveLoan(@PathVariable String id) {
+    public ResponseEntity<Object> getAllActiveLoan(@PathVariable Long id) {
         LoanResponse loanResponse = LoanResponse.builder()
                 .status(HttpStatus.OK.value())
                 .message("Get all loan successfully")

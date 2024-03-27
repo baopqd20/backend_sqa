@@ -12,5 +12,5 @@ public interface LoanRepository extends JpaRepository<Loan, String> {
     List<Loan> findAllByCustomer(Customer user);
 
     @Query(value = "SELECT * FROM Loans l WHERE l.status = 2 AND l.customer_id = :id", nativeQuery = true)
-    List<Loan> findAllActiveLoan(@Param("id") String id);
+    List<Loan> findAllActiveLoan(@Param("id") Long id);
 }

@@ -67,7 +67,7 @@ public class LoanService {
         return true;
     }
 
-    public List<Loan> getAllActiveLoan(String id) {
+    public List<Loan> getAllActiveLoan(Long id) {
         return loanRepository.findAllActiveLoan(id);
     }
 }
