@@ -117,7 +117,7 @@
             var customerId = urlParams.get('id');
 
             // Gọi API để lấy thông tin người dùng
-            $http.get('http://localhost:8080/customer/' + customerId)
+            $http.get('/customer/' + customerId)
                 .then(function(response) {
                     $scope.customer = response.data;
                 })
